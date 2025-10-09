@@ -1,6 +1,36 @@
 version: "3.8"
 
 services:
+  airflow:
+    image: apache/airflow:2.7.1
+    restart: unless-stopped
+    environment:
+      AIRFLOW__CORE__EXECUTOR: SequentialExecutor
+      AIRFLOW__CORE__LOAD_EXAMPLES: "false"
+      AIRFLOW__CORE__DAGS_FOLDER: /opt/airflow/dags
+      PYTHONPATH: "/opt/airflow/project"
+      _PIP_ADDITIONAL_REQUIREMENTS: "psycopg2-binary sqlalchemy pandas"
+      POSTGRES_HOST: "postgres"
+      POSTGRES_PORT: "${POSTGRES_PORT:-5432}"
+      POSTGRES_USER: "${POSTGRES_USER}"
+      POSTGRES_PASSWORD: "${POSTGRES_PASSWORD}"
+      POSTGRES_DB: "${POSTGRES_DB}"
+    volumes:
+      - ./airflow/dags:/opt/airflow/dags
+      - ./scripts:/opt/airflow/scripts
+      - ./data:/opt/airflow/data
+      - ./outputs:/opt/airflow/outputs
+      - ./:/opt/airflow/project
+    ports:
+      - "8080:8080"
+    command: >
+      bash -c "airflow db init &&
+              airflow users create --username admin --password admin --firstname Admin --lastname User --role Admin --email admin@example.com || true &&
+              airflow webserver & sleep 5 && airflow scheduler"
+    depends_on:
+      - postgres
+
+
   postgres:
     image: postgres:15-alpine
     restart: unless-stopped
@@ -26,10 +56,11 @@ services:
     volumes:
       - chroma_data:/chroma/chroma
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8000/api/v1/heartbeat"]
-      interval: 10s
-      timeout: 5s
+      test: ["CMD-SHELL", "curl -f http://localhost:8000/docs || curl -f http://localhost:8000/api/v1/heartbeat || exit 1"]
+      interval: 15s
+      timeout: 10s
       retries: 10
+
 
 
   streamlit:
@@ -49,10 +80,9 @@ services:
     ports:
       - "${STREAMLIT_PORT:-8501}:8501"
     depends_on:
-      postgres:
-        condition: service_healthy
-      chroma:
-        condition: service_healthy
+      - postgres
+      - chroma
+
     volumes:
       - ./:/app
     command: ["poetry", "run", "streamlit", "run", "app/streamlit_app.py", "--server.port=8501", "--server.address=0.0.0.0"]

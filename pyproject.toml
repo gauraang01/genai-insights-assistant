@@ -12,9 +12,10 @@ python = "^3.10"
 streamlit = "^1.38.0"
 pandas = "^2.2.3"
 sqlalchemy = "^2.0.36"
-psycopg2-binary = "^2.9.9"
+psycopg2-binary = "*"
 requests = "^2.32.3"
 chromadb = "^0.5.11"
+great_expectations = "*"
 
 # To be added later 
 # langchain = "^0.3.0"

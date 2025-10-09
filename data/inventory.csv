@@ -1,0 +1,5 @@
+sku,product_name,stock_level,reorder_point
+SKU-001,Widget A,120,50
+SKU-002,Widget B,10,20
+SKU-003,Widget C,0,30
+SKU-004,Widget D,500,100
