@@ -1,0 +1,31 @@
+[tool.poetry]
+name = "genai-insights-assistant"
+version = "0.1.0"
+description = "Mini GenAI-powered Data Insights Assistant (prototype)"
+authors = ["Gauraang Sharma <gauraangsharmas@gmail.com>"]
+readme = "README.md"
+license = "MIT"
+package-mode = false
+
+[tool.poetry.dependencies]
+python = "^3.10"
+streamlit = "^1.38.0"
+pandas = "^2.2.3"
+sqlalchemy = "^2.0.36"
+psycopg2-binary = "^2.9.9"
+requests = "^2.32.3"
+chromadb = "^0.5.11"
+
+# To be added later 
+# langchain = "^0.3.0"
+# openai = "^1.50.0"
+# sqlglot = "^23.0.0"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^8.3.3"
+black = "^24.8.0"
+isort = "^5.13.2"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
