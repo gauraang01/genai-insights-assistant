@@ -1,0 +1,16 @@
+name: "genai_data_insights"
+version: "1.0"
+config-version: 2
+
+profile: "genai_profile"
+
+model-paths: ["dbt/models"]
+target-path: "dbt/target"
+clean-targets: ["dbt/target", "dbt/dbt_packages"]
+
+models:
+  genai_data_insights:
+    staging:
+      materialized: view
+    marts:
+      materialized: table

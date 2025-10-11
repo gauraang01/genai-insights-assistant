@@ -8,3 +8,10 @@ Build 2: Added airflow + elt process + basic unit test
 ```bash
 cp .env.sample .env && # edit .env to set POSTGRES_PASSWORD (and optionally OPENAI_API_KEY)
 docker compose up --build
+
+## Run DBT
+export DBT_PROFILES_DIR=./dbt
+poetry run dbt clean
+poetry run dbt deps
+poetry run dbt run
+poetry run dbt test

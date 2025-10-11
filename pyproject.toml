@@ -16,6 +16,8 @@ psycopg2-binary = "*"
 requests = "^2.32.3"
 chromadb = "^0.5.11"
 great_expectations = "*"
+dbt-core = "*"
+dbt-postgres = "*"
 
 # To be added later 
 # langchain = "^0.3.0"

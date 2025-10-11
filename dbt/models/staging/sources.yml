@@ -1,0 +1,14 @@
+version: 2
+
+sources:
+  - name: public
+    description: "Raw/staging tables loaded by the ETL pipeline into the Postgres 'public' schema."
+    database: "{{ env_var('POSTGRES_DB', 'genai_db') }}"
+    schema: public
+    tables:
+      - name: stg_orders
+        description: "Raw orders data loaded by ETL."
+      - name: stg_shipments
+        description: "Raw shipments data loaded by ETL."
+      - name: stg_inventory
+        description: "Raw inventory data loaded by ETL."

@@ -64,9 +64,10 @@ def run_etl():
     orders, shipments_small, inventory, orders_ship = transform(orders, shipments, inventory)
 
     # load staging tables
-    load_to_postgres(orders, "stg_orders", engine)
-    load_to_postgres(shipments_small, "stg_shipments", engine)
-    load_to_postgres(inventory, "stg_inventory", engine)
+    load_to_postgres(orders, "raw_orders", engine)
+    load_to_postgres(shipments_small, "raw_shipments", engine)
+    load_to_postgres(inventory, "raw_inventory", engine)
+
 
     out_path, agg = save_outputs(orders_ship)
     logger.info("ETL finished")

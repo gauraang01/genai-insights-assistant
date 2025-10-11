@@ -21,3 +21,8 @@ docker-compose.override.yml
 
 # misc
 .DS_Store
+
+# dbt
+dbt/target/
+
+outputs/
