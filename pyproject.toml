@@ -14,15 +14,16 @@ pandas = "^2.2.3"
 sqlalchemy = "^2.0.36"
 psycopg2-binary = "*"
 requests = "^2.32.3"
-chromadb = "^0.5.11"
+chromadb = "1.1.1"
 great_expectations = "*"
 dbt-core = "*"
 dbt-postgres = "*"
+python-dotenv = "*"
 
 # To be added later 
-# langchain = "^0.3.0"
-# openai = "^1.50.0"
-# sqlglot = "^23.0.0"
+langchain = "^0.3.0"
+openai = "^1.50.0"
+sqlglot = "^23.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.3"

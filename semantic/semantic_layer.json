@@ -1,0 +1,55 @@
+{
+    "version": 1,
+    "entities": {
+      "orders": {
+        "model": "fct_orders",
+        "description": "Fact table containing order-level summaries."
+      },
+      "inventory": {
+        "model": "dim_inventory",
+        "description": "Dimension table showing current inventory status."
+      }
+    },
+    "metrics": {
+      "total_revenue": {
+        "sql": "SUM(total_value)",
+        "model": "fct_orders",
+        "description": "Total revenue across orders"
+      },
+      "orders_count": {
+        "sql": "COUNT(DISTINCT order_id)",
+        "model": "fct_orders",
+        "description": "Number of unique orders"
+      },
+      "low_stock_count": {
+        "sql": "COUNT(CASE WHEN reorder_needed THEN 1 END)",
+        "model": "dim_inventory",
+        "description": "Number of products below reorder threshold"
+      }
+    },
+    "dimensions": {
+      "order_month": {
+        "sql": "order_month",
+        "model": "fct_orders",
+        "description": "Month of the order"
+      },
+      "carrier": {
+        "sql": "carrier",
+        "model": "stg_shipments",
+        "description": "Shipment carrier name"
+      },
+      "reorder_needed": {
+        "sql": "reorder_needed",
+        "model": "dim_inventory",
+        "description": "Boolean indicating if restock is needed"
+      }
+    },
+    "joins": [
+      {
+        "left_model": "fct_orders",
+        "right_model": "dim_inventory",
+        "condition": "fct_orders.order_month = dim_inventory.reorder_needed"
+      }
+    ]
+  }
+  

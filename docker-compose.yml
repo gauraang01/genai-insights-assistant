@@ -48,18 +48,18 @@ services:
       retries: 10
 
   chroma:
-    image: ghcr.io/chroma-core/chroma:0.4.24
-    restart: unless-stopped
-    command: ["--host", "0.0.0.0", "--port", "8000"]
+    image: chromadb/chroma:1.1.1
+    container_name: chroma
     ports:
-      - "${CHROMA_HTTP_PORT:-8000}:8000"
+      - "8000:8000"
     volumes:
       - chroma_data:/chroma/chroma
-    healthcheck:
-      test: ["CMD-SHELL", "curl -f http://localhost:8000/docs || curl -f http://localhost:8000/api/v1/heartbeat || exit 1"]
-      interval: 15s
-      timeout: 10s
-      retries: 10
+    environment:
+      - CHROMA_SERVER_HOST=0.0.0.0
+      - CHROMA_SERVER_HTTP_PORT=8000
+      - CHROMA_TELEMETRY=False
+      - CHROMA_PERSIST_DIRECTORY=/chroma/chroma
+    restart: unless-stopped
 
 
 

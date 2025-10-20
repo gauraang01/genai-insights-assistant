@@ -26,3 +26,6 @@ docker-compose.override.yml
 dbt/target/
 
 outputs/
+
+# Semantic
+semantic/merged_semantic.json
