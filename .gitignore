@@ -29,3 +29,6 @@ outputs/
 
 # Semantic
 semantic/merged_semantic.json
+
+# Logs
+logs

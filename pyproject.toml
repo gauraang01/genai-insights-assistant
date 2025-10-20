@@ -11,19 +11,17 @@ package-mode = false
 python = "^3.10"
 streamlit = "^1.38.0"
 pandas = "^2.2.3"
-sqlalchemy = "^2.0.36"
-psycopg2-binary = "*"
 requests = "^2.32.3"
 chromadb = "1.1.1"
 great_expectations = "*"
 dbt-core = "*"
 dbt-postgres = "*"
 python-dotenv = "*"
-
-# To be added later 
-langchain = "^0.3.0"
-openai = "^1.50.0"
-sqlglot = "^23.0.0"
+langchain = "*"
+langchain-openai = "*"
+sqlglot = "*"
+sqlalchemy = "*"
+psycopg2-binary = "*"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.3.3"

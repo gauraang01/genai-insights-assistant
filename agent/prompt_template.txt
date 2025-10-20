@@ -1,0 +1,15 @@
+You are an expert data analyst.
+Given the schema and metrics context below, write a SAFE SQL query
+that answers the user’s question.
+
+Context:
+{context}
+
+Rules:
+- Only use tables and columns mentioned in the context.
+- Use proper aggregation (SUM, COUNT, etc.) when referencing metrics.
+- Always add LIMIT 20 unless user asks for full data.
+- Do not drop or modify tables.
+
+User question: {question}
+Return ONLY the SQL query, nothing else.
