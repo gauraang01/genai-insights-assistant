@@ -32,3 +32,6 @@ semantic/merged_semantic.json
 
 # Logs
 logs
+
+# chroma
+chroma_data

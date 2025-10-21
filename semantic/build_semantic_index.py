@@ -22,7 +22,7 @@ def get_embeddings():
         print("🔑 Using OpenAI embeddings...")
         return OpenAIEmbeddings()
     else:
-        print("🧠 Using local MiniLM embeddings (offline mode)...")
+        print("Using local MiniLM embeddings (offline mode)...")
         return HuggingFaceEmbeddings(model_name="sentence-transformers/all-MiniLM-L6-v2")
 
 def get_chroma_client():
@@ -34,8 +34,8 @@ def get_chroma_client():
     client = HttpClient(
         host=host,
         port=port,
-        tenant="default_tenant",       # 👈 Explicitly set
-        database="default_database"    # 👈 Explicitly set
+        tenant="default_tenant",
+        database="default_database"
     )
     client.list_collections()  # quick sanity check
     print("Connected to Chroma server.")
@@ -64,9 +64,9 @@ def build_index(merged_json="semantic/merged_semantic.json"):
     chroma_client = get_chroma_client()
     try:
         chroma_client.delete_collection("semantic_index")
-        print("🧹 Old collection deleted.")
+        print("Old collection deleted.")
     except Exception:
-        print("ℹ️ No existing collection found.")
+        print("No existing collection found.")
 
     collection = chroma_client.get_or_create_collection("semantic_index")
 
@@ -80,7 +80,7 @@ def build_index(merged_json="semantic/merged_semantic.json"):
         pass
 
     collection.add(documents=texts, metadatas=metadatas, embeddings=embeddings, ids=ids)
-    print(f"✅ Indexed {len(texts)} semantic entries in 'semantic_index'.")
+    print(f"Indexed {len(texts)} semantic entries in 'semantic_index'.")
 
 if __name__ == "__main__":
     build_index()

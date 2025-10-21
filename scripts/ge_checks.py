@@ -43,7 +43,7 @@ def run_checks():
     check_orders(orders)
     check_shipments(shipments)
     check_inventory(inventory)
-    print("✅ All Great Expectations checks passed successfully!")
+    print("All Great Expectations checks passed successfully!")
 
 if __name__ == "__main__":
     run_checks()
