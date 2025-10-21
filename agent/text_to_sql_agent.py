@@ -102,13 +102,13 @@ def generate_sql(question: str) -> str:
     response = llm.invoke(prompt)
     raw_output = response.content.strip()
 
-    print("\n🗒️ Raw model output:\n", raw_output, "\n")
+    print("\nRaw model output:\n", raw_output, "\n")
 
     sql = clean_sql_output(raw_output)
 
     # Validate SQL
     if not validate_sql(sql):
-        print("⚠️ SQL validation failed. Retrying with stricter prompt...")
+        print("SQL validation failed. Retrying with stricter prompt...")
         retry_prompt = (
             f"Return ONLY a valid SQL SELECT query for this question.\n"
             f"Question: {question}\nContext: {context}\n"
@@ -120,7 +120,7 @@ def generate_sql(question: str) -> str:
     if not validate_sql(sql):
         raise ValueError("Generated SQL failed validation after retry")
 
-    print("✅ SQL validation passed.")
+    print("SQL validation passed.")
     return sql
 
 
