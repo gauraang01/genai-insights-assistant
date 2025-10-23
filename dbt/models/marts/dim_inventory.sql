@@ -1,5 +1,6 @@
 SELECT
     sku,
+    product_id,
     product_name,
     stock_level,
     reorder_point,

@@ -17,6 +17,20 @@ and automatically:
 
 ---
 
+
+| Table           | Type      | Built By | Used For            | LLM Relevance                  |
+| --------------- | --------- | -------- | ------------------- | ------------------------------ |
+| `raw_orders`    | Raw       | Airflow  | Source data         | Foundation for sales metrics   |
+| `raw_shipments` | Raw       | Airflow  | Logistics data      | Enables delivery KPIs          |
+| `raw_inventory` | Raw       | Airflow  | Stock info          | Supports availability analysis |
+| `stg_orders`    | Staging   | dbt      | Cleaned orders      | Used in facts                  |
+| `stg_shipments` | Staging   | dbt      | Cleaned shipments   | Used in facts                  |
+| `stg_inventory` | Staging   | dbt      | Cleaned inventory   | Used in dimensions             |
+| `dim_inventory` | Dimension | dbt      | Contextual metadata | Used for joins & enrichment    |
+| `fct_orders`    | Fact      | dbt      | Aggregated metrics  | Queried by LLM agent           |
+
+
+
 ## 🧩 Architecture
             ┌──────────────────────────────────────┐
             │           Streamlit UI               │
@@ -39,6 +53,32 @@ and automatically:
        │                                               ▼
        └─────────────── Apache Airflow ────────────────┘
                   (ETL orchestration)
+
+
+
+Data flow -> 
+
+CSV Files (orders, shipments, inventory)
+        │
+        ▼
+  Airflow DAG → Creates:
+        ├── raw_orders
+        ├── raw_shipments
+        └── raw_inventory
+        │
+        ▼
+  dbt transforms → Creates:
+        ├── stg_orders
+        ├── stg_shipments
+        ├── stg_inventory
+        │
+        ├── dim_inventory
+        └── fct_orders
+        │
+        ▼
+  Semantic Layer + LangChain Agent
+        └── LLM queries these models
+
 
 
 ## 🧰 Tech Stack

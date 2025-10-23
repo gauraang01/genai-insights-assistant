@@ -11,3 +11,47 @@ sources:
         description: "Raw shipments data"
       - name: raw_inventory
         description: "Raw inventory data"
+
+models:
+  - name: stg_shipments
+    description: "Shipment staging data"
+    columns:
+      - name: order_id
+        description: "Associated order"
+      - name: shipped_date
+        description: "Date shipment left warehouse"
+      - name: carrier
+        description: "Carrier name"
+      - name: status
+        description: "Delivery status"
+
+  - name: dim_inventory
+    description: "Inventory dimension"
+    columns:
+      - name: sku
+        description: "Stock keeping unit"
+      - name: product_id
+        description: "Product link key"
+      - name: product_name
+        description: "Name of the item"
+      - name: stock_level
+        description: "Units currently in stock"
+      - name: reorder_point
+        description: "Minimum stock threshold for reorder"
+      - name: reorder_needed
+        description: "Flag if restock required"
+
+
+  - name: fct_orders
+    description: "Fact table containing order-level summaries."
+    columns:
+      - name: product_id
+        description: "Unique identifier for the product."
+      - name: order_month
+        description: "Month of the order."
+      - name: total_revenue
+        description: "Sum of order totals for this product-month."
+      - name: total_orders
+        description: "Distinct count of orders for this product-month."
+      - name: avg_shipment_delay
+        description: "Average shipment delay in days."
