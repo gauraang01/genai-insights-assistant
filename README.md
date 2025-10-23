@@ -4,6 +4,7 @@
 
 ---
 
+
 ## 🚀 Overview
 This prototype lets you ask questions such as:
 > “Show total revenue by order month”  
@@ -16,6 +17,7 @@ and automatically:
 4. Displays results and charts in Streamlit  
 
 
+
 ## ✨ Key Features
 - **Natural Language → SQL:** Ask business questions in plain English; get generated SQL + charts.
 - **Semantic Understanding:** Uses a JSON semantic layer and vector embeddings for schema-aware reasoning.
@@ -24,6 +26,7 @@ and automatically:
 - **Self-updating Schema Context:** dbt manifest and semantic builder ensure metadata stays current.
 - **Multi-agent Reasoning:** LangChain agents handle SQL generation, query validation, and chart recommendation.
 - **Plug-and-play Stack:** One `docker-compose up` brings Airflow, dbt, Postgres, and Streamlit online.
+
 
 
 ## 🧠 Semantic Layer Design
@@ -39,6 +42,7 @@ and automatically:
 **Dimensions:** `order_month`, `carrier`, `reorder_needed`
 
 
+
 ## 🧠 Example Questions You Can Ask
 | Question | What Happens |
 |-----------|---------------|
@@ -47,6 +51,8 @@ and automatically:
 | “What is the average shipment delay per product?” | Uses `avg_shipment_delay` from `fct_orders` |
 | “Show total revenue by month” | Aggregates `SUM(total_revenue)` from `fct_orders` |
 | “How many products are below reorder threshold?” | Uses semantic metric `low_stock_count` |
+
+
 
 ## 📈 Sample Insights
 
@@ -68,67 +74,6 @@ and automatically:
 | `stg_inventory` | Staging   | dbt      | Cleaned inventory   | Used in dimensions             |
 | `dim_inventory` | Dimension | dbt      | Contextual metadata | Used for joins & enrichment    |
 | `fct_orders`    | Fact      | dbt      | Aggregated metrics  | Queried by LLM agent           |
-
-
-## 📁 Folder Structure
-<details>
-<summary>Click to expand project structure</summary>
-genai-insights-assistant/
-├── airflow/                         # Airflow DAGs and operator definitions for ETL orchestration
-│   └── dags/
-│       └── genai_data_etl_dag.py    # DAG that loads CSVs → Postgres (calls scripts/etl.py)
-│
-├── data/                            # Raw CSV source files
-│   ├── orders.csv
-│   ├── shipments.csv
-│   └── inventory.csv
-│
-├── scripts/                         # Standalone Python scripts (can be run by Airflow or manually)
-│   ├── etl.py                       # Core ETL pipeline: reads CSVs, transforms, and loads Postgres tables
-│   ├── ge_check.py                  # Runs Great Expectations validations or sanity checks on data
-│   ├── db_check.py                  # Prints schema, row counts, and sample data from Postgres
-│   ├── schema_audit.py              # Compares raw → dbt → semantic layers for schema consistency
-│   └── sample_queries.sql           # Example SQL queries for debugging or validation
-│
-├── dbt/                             # dbt project for transformations and modeling
-│   ├── models/
-│   │   ├── staging/
-│   │   │   ├── stg_orders.sql
-│   │   │   ├── stg_shipments.sql
-│   │   │   └── stg_inventory.sql
-│   │   ├── marts/
-│   │   │   ├── fct_orders.sql
-│   │   │   └── dim_inventory.sql
-│   │   └── schema.yml               # dbt tests and column metadata
-│   ├── dbt_project.yml
-│   └── target/                      # Compiled artifacts (manifest.json, run results, etc.)
-│
-├── semantic/                        # Semantic layer and vector index for LLM reasoning
-│   ├── semantic_layer.json          # Base semantic model (entities, metrics, dimensions, joins)
-│   ├── semantic_builder.py          # Merges dbt manifest + semantic layer → merged_semantic.json
-│   ├── merged_semantic.json         # Final AI-ready semantic layer for LangChain
-│   └── build_semantic_index.py      # Builds vector embeddings of schema context into ChromaDB
-│
-├── agent/                           # LangChain agents and orchestration logic
-│   ├── text_to_sql_agent.py         # Converts natural language → SQL using LLM + semantic layer
-│   └── sql_validator.py             # (Optional) Validates generated SQL for syntax & safety
-│
-├── streamlit_app/                   # Interactive Streamlit front-end for querying & visualization
-│   ├── app.py                       # Streamlit UI — handles user queries, SQL, and charts
-│   └── components/                  # (Optional) Custom widgets or reusable UI components
-│
-├── tests/                           # Unit and integration tests
-│   ├── test_etl.py                  # Verifies ETL load and schema alignment
-│   ├── test_dbt_models.py           # Tests dbt transformations and outputs
-│   ├── test_semantic_integrity.py   # Validates dbt ↔ semantic layer alignment
-│   └── __init__.py                  # (optional) marks this directory as a Python package
-│
-├── docker-compose.yml               # Spins up Postgres, Airflow, Streamlit, and supporting services
-├── .env.sample                      # Example environment variables (DB credentials, API keys)
-├── poetry.lock                      # Dependency lock file for Poetry
-├── pyproject.toml                   # Project configuration and dependencies
-└── README.md                        # Documentation and quickstart guide
-</details>
 
 
 
@@ -194,6 +139,7 @@ CSV Files (orders, shipments, inventory)
 | UI                | Streamlit + Plotly        | Visualization |
 | Data Quality      | Great Expectations        | Validation |
 | Containerization  | Docker Compose            | Reproducible stack |
+
 
 
 ## ⚡ Quickstart
