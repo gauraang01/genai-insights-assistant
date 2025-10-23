@@ -1,4 +1,4 @@
-# 🧠 GenAI Data Insights Assistant (mini WW-FBA)
+# 🧠 GenAI Data Insights Assistant
 
 > A full-stack GenAI-powered analytics assistant — combining ETL (Airflow + dbt + Postgres) with a semantic layer (Chroma + LangChain) and an interactive Streamlit UI for text-to-SQL insights.
 
@@ -71,21 +71,26 @@ and automatically:
 
 
 ## 📁 Folder Structure
+<details>
+<summary>Click to expand project structure</summary>
 genai-insights-assistant/
 ├── airflow/                         # Airflow DAGs and operator definitions for ETL orchestration
 │   └── dags/
 │       └── genai_data_etl_dag.py    # DAG that loads CSVs → Postgres (calls scripts/etl.py)
 │
-├── data/                            # Raw CSV sources
+├── data/                            # Raw CSV source files
 │   ├── orders.csv
 │   ├── shipments.csv
 │   └── inventory.csv
 │
-├── scripts/                         # Standalone Python scripts (run inside Airflow as well)
-│   ├── etl.py                       # Core ETL pipeline: reads CSVs, transforms, loads Postgres tables
-│   ├── ge_check.py.py               # Runs Great Expectations validations or quick sanity checks
+├── scripts/                         # Standalone Python scripts (can be run by Airflow or manually)
+│   ├── etl.py                       # Core ETL pipeline: reads CSVs, transforms, and loads Postgres tables
+│   ├── ge_check.py                  # Runs Great Expectations validations or sanity checks on data
+│   ├── db_check.py                  # Prints schema, row counts, and sample data from Postgres
+│   ├── schema_audit.py              # Compares raw → dbt → semantic layers for schema consistency
+│   └── sample_queries.sql           # Example SQL queries for debugging or validation
 │
-├── dbt/                             # dbt project with staging, dimension, and fact models
+├── dbt/                             # dbt project for transformations and modeling
 │   ├── models/
 │   │   ├── staging/
 │   │   │   ├── stg_orders.sql
@@ -94,31 +99,36 @@ genai-insights-assistant/
 │   │   ├── marts/
 │   │   │   ├── fct_orders.sql
 │   │   │   └── dim_inventory.sql
-│   │   └── schema.yml               # Tests and metadata for models
+│   │   └── schema.yml               # dbt tests and column metadata
 │   ├── dbt_project.yml
-│   └── target/                      # Compiled manifest, run results, etc.
+│   └── target/                      # Compiled artifacts (manifest.json, run results, etc.)
 │
-├── semantic/                        # Semantic layer definitions and utilities
+├── semantic/                        # Semantic layer and vector index for LLM reasoning
 │   ├── semantic_layer.json          # Base semantic model (entities, metrics, dimensions, joins)
 │   ├── semantic_builder.py          # Merges dbt manifest + semantic layer → merged_semantic.json
 │   ├── merged_semantic.json         # Final AI-ready semantic layer for LangChain
 │   └── build_semantic_index.py      # Builds vector embeddings of schema context into ChromaDB
 │
 ├── agent/                           # LangChain agents and orchestration logic
-│   ├── text_to_sql_agent.py         # Converts natural language → SQL using LLM and semantic layer
+│   ├── text_to_sql_agent.py         # Converts natural language → SQL using LLM + semantic layer
 │   └── sql_validator.py             # (Optional) Validates generated SQL for syntax & safety
 │
-├── streamlit_app/                   # Interactive front-end for querying and visualization
-│   ├── app.py                       # Streamlit UI — handles queries, results, and Plotly charts
-│   └── components/                  # (Optional) UI components or custom widgets
+├── streamlit_app/                   # Interactive Streamlit front-end for querying & visualization
+│   ├── app.py                       # Streamlit UI — handles user queries, SQL, and charts
+│   └── components/                  # (Optional) Custom widgets or reusable UI components
 │
-├── tests/                           # Unit and integration tests (optional future addition)
-│   └── test_etl.py                  # Example test: verifies ETL load and schema alignment
+├── tests/                           # Unit and integration tests
+│   ├── test_etl.py                  # Verifies ETL load and schema alignment
+│   ├── test_dbt_models.py           # Tests dbt transformations and outputs
+│   ├── test_semantic_integrity.py   # Validates dbt ↔ semantic layer alignment
+│   └── __init__.py                  # (optional) marks this directory as a Python package
 │
 ├── docker-compose.yml               # Spins up Postgres, Airflow, Streamlit, and supporting services
 ├── .env.sample                      # Example environment variables (DB credentials, API keys)
-├── poetry.lock / pyproject.toml     # Python dependencies managed via Poetry
+├── poetry.lock                      # Dependency lock file for Poetry
+├── pyproject.toml                   # Project configuration and dependencies
 └── README.md                        # Documentation and quickstart guide
+</details>
 
 
 
