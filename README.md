@@ -52,7 +52,7 @@ and automatically:
 
 | Query | Result | Visualization |
 |--------|---------|----------------|
-| **What is the average shipment delay per product?** | ![chart](assets/average_shipment_delay.png) |
+| **What is the average shipment delay per product?** | `SKU-001, SKU-002`| ![chart](assets/average_shipment_delay.png) |
 | **Products Below Reorder Point** | `Widget B, Widget C` | ![chart](assets/below_reorder_point.png) |
 
 
