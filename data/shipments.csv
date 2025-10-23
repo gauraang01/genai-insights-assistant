@@ -1,5 +1,5 @@
 shipment_id,order_id,shipped_date,carrier,tracking_number,status
-2001,O001,2025-09-02,FedEx,TRK1001,delivered
-2002,O002,2025-09-03,UPS,TRK1002,in_transit
+2001,O001,2025-02-02,FedEx,TRK1001,delivered
+2002,O002,2025-09-04,UPS,TRK1002,in_transit
 2003,O003,2025-09-04,DHL,TRK1003,delivered
 2004,O005,2025-09-06,FedEx,TRK1005,delivered

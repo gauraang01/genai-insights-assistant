@@ -7,7 +7,7 @@
 ## 🚀 Overview
 This prototype lets you ask questions such as:
 > “Show total revenue by order month”  
-<!-- > “Top 5 products by average shipment delay” -->
+> “Top 5 products by average shipment delay”
 
 and automatically:
 1. Retrieves schema context from Chroma (vector DB)  
@@ -15,9 +15,49 @@ and automatically:
 3. Executes queries on Postgres  
 4. Displays results and charts in Streamlit  
 
+
+## ✨ Key Features
+- **Natural Language → SQL:** Ask business questions in plain English; get generated SQL + charts.
+- **Semantic Understanding:** Uses a JSON semantic layer and vector embeddings for schema-aware reasoning.
+- **Automated Data Lineage:** Each metric (e.g., `total_revenue`) is traced from raw CSV → ETL → dbt → semantic layer.
+- **Data Quality Checks:** Great Expectations validates source and transformed datasets.
+- **Self-updating Schema Context:** dbt manifest and semantic builder ensure metadata stays current.
+- **Multi-agent Reasoning:** LangChain agents handle SQL generation, query validation, and chart recommendation.
+- **Plug-and-play Stack:** One `docker-compose up` brings Airflow, dbt, Postgres, and Streamlit online.
+
+
+## 🧠 Semantic Layer Design
+- Defined in `semantic/semantic_layer.json`
+- Merged automatically with dbt metadata into `merged_semantic.json`
+- Used by LangChain agent to:
+  - Retrieve entity/column context
+  - Generate schema-aware SQL
+  - Support cross-model joins (`fct_orders ↔ dim_inventory`)
+  
+**Entities:** `orders`, `inventory`, `shipments`  
+**Metrics:** `total_revenue`, `orders_count`, `low_stock_count`  
+**Dimensions:** `order_month`, `carrier`, `reorder_needed`
+
+
+## 🧠 Example Questions You Can Ask
+| Question | What Happens |
+|-----------|---------------|
+| “How many unique orders were placed per month?” | Generates SQL on `fct_orders`, groups by `order_month`, shows bar chart |
+| “Which products need reordering?” | Queries `dim_inventory` for `reorder_needed = TRUE` |
+| “What is the average shipment delay per product?” | Uses `avg_shipment_delay` from `fct_orders` |
+| “Show total revenue by month” | Aggregates `SUM(total_revenue)` from `fct_orders` |
+| “How many products are below reorder threshold?” | Uses semantic metric `low_stock_count` |
+
+## 📈 Sample Insights
+
+| Query | Result | Visualization |
+|--------|---------|----------------|
+| **What is the average shipment delay per product?** | ![chart](assets/average_shipment_delay.png) |
+| **Products Below Reorder Point** | `Widget B, Widget C` | ![chart](assets/below_reorder_point.png) |
+
+
 ---
-
-
+## Tables
 | Table           | Type      | Built By | Used For            | LLM Relevance                  |
 | --------------- | --------- | -------- | ------------------- | ------------------------------ |
 | `raw_orders`    | Raw       | Airflow  | Source data         | Foundation for sales metrics   |
@@ -28,6 +68,57 @@ and automatically:
 | `stg_inventory` | Staging   | dbt      | Cleaned inventory   | Used in dimensions             |
 | `dim_inventory` | Dimension | dbt      | Contextual metadata | Used for joins & enrichment    |
 | `fct_orders`    | Fact      | dbt      | Aggregated metrics  | Queried by LLM agent           |
+
+
+## 📁 Folder Structure
+genai-insights-assistant/
+├── airflow/                         # Airflow DAGs and operator definitions for ETL orchestration
+│   └── dags/
+│       └── genai_data_etl_dag.py    # DAG that loads CSVs → Postgres (calls scripts/etl.py)
+│
+├── data/                            # Raw CSV sources
+│   ├── orders.csv
+│   ├── shipments.csv
+│   └── inventory.csv
+│
+├── scripts/                         # Standalone Python scripts (run inside Airflow as well)
+│   ├── etl.py                       # Core ETL pipeline: reads CSVs, transforms, loads Postgres tables
+│   ├── ge_check.py.py               # Runs Great Expectations validations or quick sanity checks
+│
+├── dbt/                             # dbt project with staging, dimension, and fact models
+│   ├── models/
+│   │   ├── staging/
+│   │   │   ├── stg_orders.sql
+│   │   │   ├── stg_shipments.sql
+│   │   │   └── stg_inventory.sql
+│   │   ├── marts/
+│   │   │   ├── fct_orders.sql
+│   │   │   └── dim_inventory.sql
+│   │   └── schema.yml               # Tests and metadata for models
+│   ├── dbt_project.yml
+│   └── target/                      # Compiled manifest, run results, etc.
+│
+├── semantic/                        # Semantic layer definitions and utilities
+│   ├── semantic_layer.json          # Base semantic model (entities, metrics, dimensions, joins)
+│   ├── semantic_builder.py          # Merges dbt manifest + semantic layer → merged_semantic.json
+│   ├── merged_semantic.json         # Final AI-ready semantic layer for LangChain
+│   └── build_semantic_index.py      # Builds vector embeddings of schema context into ChromaDB
+│
+├── agent/                           # LangChain agents and orchestration logic
+│   ├── text_to_sql_agent.py         # Converts natural language → SQL using LLM and semantic layer
+│   └── sql_validator.py             # (Optional) Validates generated SQL for syntax & safety
+│
+├── streamlit_app/                   # Interactive front-end for querying and visualization
+│   ├── app.py                       # Streamlit UI — handles queries, results, and Plotly charts
+│   └── components/                  # (Optional) UI components or custom widgets
+│
+├── tests/                           # Unit and integration tests (optional future addition)
+│   └── test_etl.py                  # Example test: verifies ETL load and schema alignment
+│
+├── docker-compose.yml               # Spins up Postgres, Airflow, Streamlit, and supporting services
+├── .env.sample                      # Example environment variables (DB credentials, API keys)
+├── poetry.lock / pyproject.toml     # Python dependencies managed via Poetry
+└── README.md                        # Documentation and quickstart guide
 
 
 
@@ -121,12 +212,15 @@ poetry run dbt run         # Create tables/views in Postgres
 
 
 # Semantic layer
-poetry run python semantic/semantic_builder.py
-poetry run python semantic/build_semantic_index.py
+poetry run python semantic/semantic_builder.py  # Build merged_semantic.json
+poetry run python semantic/build_semantic_index.py # indexes in vector database
 
+# Run sanity tests
+poetry run pytest -v
 
 # Run agent
 poetry run python -m agent.text_to_sql_agent
 
 # Run streamlit UI from docker:
 http://localhost:8501/
+
